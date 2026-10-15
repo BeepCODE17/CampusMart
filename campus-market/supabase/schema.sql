@@ -10,8 +10,8 @@ create table if not exists public.allowed_email_domains (
 alter table public.allowed_email_domains enable row level security;
 -- No policies: only the database itself (and the service role) can read this table.
 
--- EDIT THIS: replace with your college's email domain(s).
-insert into public.allowed_email_domains (domain) values ('yourcollege.edu')
+-- College email domain(s) allowed to sign up. Add a row per domain if you need more.
+insert into public.allowed_email_domains (domain) values ('pilani.bits-pilani.ac.in')
   on conflict do nothing;
 
 -- ---------------------------------------------------------------------------

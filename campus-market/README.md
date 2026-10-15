@@ -38,7 +38,7 @@ Install the **LTS** version from https://nodejs.org (or run `winget install Open
 ### 2. Create a Supabase project
 
 1. Sign up at https://supabase.com and create a new project.
-2. Open `supabase/schema.sql` and **change `yourcollege.edu`** to your college's email domain. Add more `insert` lines if your college uses several domains, for example one for students and one for staff.
+2. `supabase/schema.sql` only allows sign-ups from `pilani.bits-pilani.ac.in` email addresses. To allow other domains too, add more `insert` lines.
 3. In the Supabase dashboard, go to **SQL Editor**, then **New query**. Paste the whole file and click **Run**.
 4. Go to **Authentication → URL Configuration**:
    - **Site URL:** `http://localhost:3000` for now, and your real domain after you deploy.
