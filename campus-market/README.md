@@ -43,7 +43,23 @@ Install the **LTS** version from https://nodejs.org (or run `winget install Open
 4. Go to **Authentication → URL Configuration**:
    - **Site URL:** `http://localhost:3000` for now, and your real domain after you deploy.
    - **Redirect URLs:** add `http://localhost:3000/auth/callback` and later `https://your-domain/auth/callback`.
-5. Go to **Authentication → Email Templates**. In both the **Magic Link** and **Confirm signup** templates, add the code, for example `Your code is {{ .Token }}`. Then students can type the code even if they open the email on their phone.
+5. Set up email sending through Brevo. Supabase's built-in sender only emails your Supabase team members, and only a few times an hour.
+   1. In Brevo, verify a sender address under **Senders, Domains & Dedicated IPs → Senders**.
+   2. Under **SMTP & API → SMTP**, generate an **SMTP key** (it starts with `xsmtpsib-`, not `xkeysib-`).
+   3. In Supabase, go to **Authentication → Emails → SMTP Settings** and enable custom SMTP:
+
+      | Field | Value |
+      | --- | --- |
+      | Sender email | The sender address you verified in Brevo |
+      | Sender name | CampusMart |
+      | Host | `smtp-relay.brevo.com` |
+      | Port | `587` |
+      | Username | The Brevo SMTP **Login**, like `8a1b2c001@smtp-brevo.com`. **Not your email address.** |
+      | Password | The SMTP key |
+
+   4. Under **Authentication → Rate Limits**, raise the email limit to about 30 per hour.
+   5. "Error sending magic link email" on the sign-in page means Brevo rejected the login. Check **Logs → Auth** in Supabase for the reason.
+6. Go to **Authentication → Emails → Templates**. These can only be edited after custom SMTP is set up. In both the **Magic Link** and **Confirm signup** templates, add `<p>Or enter this code on the sign-in page: <strong>{{ .Token }}</strong></p>`. Then students can type the code even if they open the email on their phone.
 
 ### 3. Configure and run
 
@@ -54,18 +70,21 @@ npm install
 npm run dev
 ```
 
-Fill `.env.local` with the **Project URL** and **anon public key** from Supabase (**Project Settings → API**), and your email domain. Then open http://localhost:3000.
+Fill `.env.local` with values from Supabase **Project Settings**:
+- `NEXT_PUBLIC_SUPABASE_URL`: the **Project URL** from **Data API**, like `https://abcdefgh.supabase.co`. Leave off any `/rest/v1/` ending.
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: the **Publishable key** (`sb_publishable_...`) from **API Keys**, or the legacy **anon** key. Never use the secret / service_role key.
+
+Then open http://localhost:3000.
 
 ## Deploy (free)
 
-1. Push this folder to a GitHub repository.
-2. Go to https://vercel.com, then **Add New → Project**, and import the repository.
+1. Go to https://vercel.com, then **Add New → Project**, and import the `BeepCODE17/CampusMart` GitHub repository.
+2. Set **Root Directory** to `campus-market`, because the app lives in that subfolder.
 3. Add the same environment variables as in `.env.local`.
 4. After the first deploy, add your Vercel URL to the Supabase **Site URL** and **Redirect URLs**.
 
 ## Before launching on campus
 
-- **Email sending limits:** Supabase's built-in email sender only allows a few emails per hour. Before inviting students, set up custom SMTP under **Authentication → SMTP Settings**. Resend, Brevo and Amazon SES all have free tiers.
 - **College mail filters:** some college mail servers quarantine sign-in emails. Test with a few accounts first.
 - **Rules page:** add community rules, such as no prohibited items and meeting in public spots.
 
