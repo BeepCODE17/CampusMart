@@ -1,6 +1,8 @@
 # CampusMart
 Second hand marketplace for equipment/books within campus
 
+**Live site:** https://campusmart-psi.vercel.app
+
 Students sign in with their college email to buy and sell used books, electronics, appliances, cycles and more, and chat with sellers in the app.
 
 ## Repository layout
